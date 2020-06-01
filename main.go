@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"time"
 
 	"github.com/docker/docker/client"
 	"github.com/factorysh/docker-visitor/visitor"
@@ -13,11 +14,13 @@ import (
 func main() {
 	filenameHook := filename.NewHook()
 	log.AddHook(filenameHook)
+	log.SetLevel(log.DebugLevel)
 	c, err := client.NewEnvClient()
 	if err != nil {
 		panic(err)
 	}
-	j := janitor.New()
+	l := janitor.NewLater(map[string]time.Duration{"*": 10 * time.Second})
+	j := janitor.New(l, c)
 	w := visitor.New(c)
 	w.WatchFor(j.Event)
 	ctx := context.Background()
