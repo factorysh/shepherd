@@ -14,6 +14,9 @@ type Later struct {
 }
 
 func NewLater(cfg map[string]time.Duration) *Later {
+	if _, ok := cfg["*"]; !ok {
+		cfg["*"] = 3 * time.Minute
+	}
 	paths := make([]string, len(cfg))
 	i := 0
 	for k := range cfg {
