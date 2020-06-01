@@ -30,6 +30,10 @@ func NewLater(cfg map[string]time.Duration) *Later {
 	}
 }
 
+func (l *Later) Default() time.Duration {
+	return l.cfg["*"]
+}
+
 func (l *Later) Get(path string) (time.Duration, error) {
 	for _, p := range l.paths {
 		fmt.Println(p, path)
