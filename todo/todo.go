@@ -4,6 +4,8 @@ import (
 	"context"
 	"sync"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type Todo struct {
@@ -28,17 +30,19 @@ func (t *Todo) loop() {
 	for {
 		select {
 		case <-t.ctx.Done():
+			log.Debug("Todo is ended")
 			return
 		case id := <-t.todo:
 			t.lock.RLock()
-			defer t.lock.RUnlock()
 			a, ok := t.actions[id]
 			if ok {
 				a()
 				delete(t.actions, id)
+				log.Debug("Done")
 			} else {
 				// it's a ghost
 			}
+			t.lock.RUnlock()
 		}
 	}
 }
