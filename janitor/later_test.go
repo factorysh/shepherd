@@ -18,10 +18,4 @@ func TestJanitor(t *testing.T) {
 	d, err = j.Get("a/b")
 	assert.NoError(t, err)
 	assert.Equal(t, 100*time.Millisecond, d)
-	j = NewLater(map[string]time.Duration{
-		"b/*": 200 * time.Millisecond,
-	})
-	d, err = j.Get("c")
-	assert.Error(t, err)
-	assert.Equal(t, time.Duration(0), d)
 }
