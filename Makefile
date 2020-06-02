@@ -12,3 +12,17 @@ bin:
 test:
 	go test -v -cover github.com/factorysh/janitor-go/todo
 	go test -v -cover github.com/factorysh/janitor-go/janitor
+
+pull:
+	docker pull bearstech/golang-dev
+
+docker-build:
+	mkdir -p .cache
+	docker run -ti --rm \
+		-v `pwd`:/src \
+		-w /src \
+		-v `pwd`/.cache:/.cache \
+		-u `id -u` \
+		bearstech/golang-dev \
+		make build
+
