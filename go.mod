@@ -13,4 +13,5 @@ require (
 	github.com/spf13/cobra v1.0.0
 	github.com/stretchr/testify v1.6.0
 	golang.org/x/net v0.0.0-20200528225125-3c3fba18258b // indirect
+	gopkg.in/yaml.v2 v2.2.4
 )

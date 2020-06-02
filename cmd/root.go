@@ -11,11 +11,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var rootCmd = &cobra.Command{
-	Use:   "janitor",
-	Short: "Janitor cleans the mess",
-	Long:  ``,
-}
+var (
+	rootCmd = &cobra.Command{
+		Use:   "janitor",
+		Short: "Janitor cleans the mess",
+		Long:  ``,
+	}
+)
 
 func initLog() {
 	filenameHook := filename.NewHook()
