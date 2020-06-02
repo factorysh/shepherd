@@ -25,4 +25,3 @@ docker-build:
 		-u `id -u` \
 		bearstech/golang-dev \
 		make build
-
