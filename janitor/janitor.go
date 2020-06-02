@@ -50,7 +50,7 @@ func (j *Janitor) GetTTL(name string) (time.Duration, error) {
 
 // Event handle an event, from docker-visitor
 func (j *Janitor) Event(action string, container *types.ContainerJSON) {
-	fmt.Println("🐳 ", action)
+	fmt.Println("🐳 ", action, container.Name)
 	spew.Dump(container.State)
 	l := log.WithField("id", container.ID)
 	switch action {
