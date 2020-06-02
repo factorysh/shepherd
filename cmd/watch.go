@@ -7,6 +7,7 @@ import (
 	"github.com/factorysh/docker-visitor/visitor"
 	"github.com/factorysh/janitor-go/config"
 	"github.com/factorysh/janitor-go/janitor"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
@@ -16,7 +17,7 @@ var (
 
 func init() {
 	rootCmd.AddCommand(watchCmd)
-	watchCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file")
+	watchCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "config file")
 }
 
 var watchCmd = &cobra.Command{
@@ -40,6 +41,7 @@ var watchCmd = &cobra.Command{
 			if err != nil {
 				return err
 			}
+			log.Info(*cfg)
 		} else {
 			cfg = config.New()
 		}
