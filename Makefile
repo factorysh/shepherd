@@ -1,7 +1,6 @@
 GIT_VERSION?=$(shell git describe --tags --always --abbrev=42 --dirty)
 
 build: bin
-	go build .
 	go build \
 		-o bin/janitor \
 		-ldflags "-X github.com/factorysh/janitor-go/version.version=$(GIT_VERSION)" \
