@@ -50,6 +50,7 @@ var watchCmd = &cobra.Command{
 		l := janitor.NewLater(cfg.Ttl)
 		j := janitor.New(l, c)
 		w := visitor.New(c)
+		w.VisitCurrentCointainer(j.Visit)
 		w.WatchFor(j.Event)
 		ctx := context.Background()
 		ctx, cancel := context.WithCancel(ctx)
