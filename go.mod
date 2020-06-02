@@ -10,6 +10,7 @@ require (
 	github.com/onrik/logrus v0.5.1
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/sirupsen/logrus v1.6.0
+	github.com/spf13/cobra v1.0.0
 	github.com/stretchr/testify v1.6.0
 	golang.org/x/net v0.0.0-20200528225125-3c3fba18258b // indirect
 )
