@@ -25,3 +25,11 @@ docker-build:
 		-u `id -u` \
 		bearstech/golang-dev \
 		make build
+
+docker-upx:
+	docker run -ti --rm \
+		-u `id -u` \
+		-v `pwd`/bin:/upx \
+		-w /upx \
+		bearstech/upx \
+		upx shepherd
