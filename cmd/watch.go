@@ -5,8 +5,8 @@ import (
 
 	"github.com/docker/docker/client"
 	"github.com/factorysh/docker-visitor/visitor"
-	"github.com/factorysh/janitor-go/config"
-	"github.com/factorysh/janitor-go/janitor"
+	"github.com/factorysh/shepherd/config"
+	"github.com/factorysh/shepherd/shepherd"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
@@ -46,9 +46,9 @@ var watchCmd = &cobra.Command{
 			cfg = config.New()
 		}
 
-		// janitor
-		l := janitor.NewLater(cfg.Ttl)
-		j := janitor.New(l, c)
+		// shepherd
+		l := shepherd.NewLater(cfg.Ttl)
+		j := shepherd.New(l, c)
 		w := visitor.New(c)
 		w.VisitCurrentCointainer(j.Visit)
 		w.WatchFor(j.Event)

@@ -1,4 +1,4 @@
-package janitor
+package shepherd
 
 import (
 	"errors"

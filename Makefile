@@ -2,16 +2,16 @@ GIT_VERSION?=$(shell git describe --tags --always --abbrev=42 --dirty)
 
 build: bin
 	go build \
-		-o bin/janitor \
-		-ldflags "-X github.com/factorysh/janitor-go/version.version=$(GIT_VERSION)" \
+		-o bin/shepherd \
+		-ldflags "-X github.com/factorysh/shepherd/version.version=$(GIT_VERSION)" \
 		.
 
 bin:
 	mkdir -p bin
 
 test:
-	go test -v -cover github.com/factorysh/janitor-go/todo
-	go test -v -cover github.com/factorysh/janitor-go/janitor
+	go test -v -cover github.com/factorysh/shepherd/todo
+	go test -v -cover github.com/factorysh/shepherd/shepherd
 
 pull:
 	docker pull bearstech/golang-dev

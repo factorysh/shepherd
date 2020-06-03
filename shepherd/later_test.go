@@ -1,4 +1,4 @@
-package janitor
+package shepherd
 
 import (
 	"testing"
@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestJanitor(t *testing.T) {
+func Testshepherd(t *testing.T) {
 	j := NewLater(map[string]time.Duration{
 		"*":   500 * time.Millisecond,
 		"a/*": 100 * time.Millisecond,

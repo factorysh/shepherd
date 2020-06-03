@@ -1,7 +1,7 @@
-Janitor
+Shepherd
 =======
 
-Janitor removes exited containers, with a grace time.
+Shepherd removes exited containers, with a grace time.
 
 
 Build it

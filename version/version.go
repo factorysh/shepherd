@@ -2,7 +2,7 @@ package version
 
 var version = ""
 
-// Version of Janitor
+// Version of shepherd
 func Version() string {
 	return version
 }

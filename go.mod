@@ -1,4 +1,4 @@
-module github.com/factorysh/janitor-go
+module github.com/factorysh/shepherd
 
 go 1.14
 

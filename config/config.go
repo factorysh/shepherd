@@ -19,7 +19,7 @@ func New() *Config {
 
 func Read(path string) (*Config, error) {
 	if path == "" {
-		path = "/etc/janitor.yml"
+		path = "/etc/shepherd.yml"
 	}
 	f, err := ioutil.ReadFile(path)
 	if err != nil {

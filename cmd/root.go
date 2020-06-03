@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/factorysh/janitor-go/version"
+	"github.com/factorysh/shepherd/version"
 	"github.com/onrik/logrus/filename"
 	"github.com/onrik/logrus/sentry"
 	log "github.com/sirupsen/logrus"
@@ -13,8 +13,8 @@ import (
 
 var (
 	rootCmd = &cobra.Command{
-		Use:   "janitor",
-		Short: "Janitor cleans the mess",
+		Use:   "shepherd",
+		Short: "shepherd cleans the mess",
 		Long:  ``,
 	}
 )
@@ -33,7 +33,7 @@ func initLog() {
 			panic(err)
 		}
 		sentryHook.AddTag("version", version.Version())
-		sentryHook.AddTag("program", "Janitor")
+		sentryHook.AddTag("program", "shepherd")
 		log.AddHook(sentryHook)
 	}
 }

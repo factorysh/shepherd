@@ -1,4 +1,4 @@
-package janitor
+package shepherd
 
 import (
 	"context"
@@ -9,11 +9,11 @@ import (
 	"github.com/davecgh/go-spew/spew"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
-	"github.com/factorysh/janitor-go/todo"
+	"github.com/factorysh/shepherd/todo"
 	log "github.com/sirupsen/logrus"
 )
 
-type Janitor struct {
+type shepherd struct {
 	later  *Later
 	client *client.Client
 	todo   *todo.Todo
@@ -21,9 +21,9 @@ type Janitor struct {
 	lock   sync.RWMutex
 }
 
-// New Janitor
-func New(later *Later, client *client.Client) *Janitor {
-	return &Janitor{
+// New shepherd
+func New(later *Later, client *client.Client) *shepherd {
+	return &shepherd{
 		later:  later,
 		client: client,
 		undead: make(map[string]interface{}),
@@ -41,7 +41,7 @@ func GetName(container *types.ContainerJSON) string {
 }
 
 // GetTTL return the duration of an exited project
-func (j *Janitor) GetTTL(name string) (time.Duration, error) {
+func (j *shepherd) GetTTL(name string) (time.Duration, error) {
 	if name == "" {
 		return j.later.Default(), nil
 	}
@@ -49,7 +49,7 @@ func (j *Janitor) GetTTL(name string) (time.Duration, error) {
 }
 
 // Event handle an event, from docker-visitor
-func (j *Janitor) Event(action string, container *types.ContainerJSON) {
+func (j *shepherd) Event(action string, container *types.ContainerJSON) {
 	fmt.Println("🐳 ", action, container.Name)
 	spew.Dump(container.State)
 	l := log.WithField("id", container.ID)
@@ -82,7 +82,7 @@ func (j *Janitor) Event(action string, container *types.ContainerJSON) {
 	}
 }
 
-func (j *Janitor) Visit(container *types.ContainerJSON) error {
+func (j *shepherd) Visit(container *types.ContainerJSON) error {
 	if container.State.Status == "exited" {
 		d, err := j.GetTTL(GetName(container))
 		l := log.WithField("id", container.ID)
