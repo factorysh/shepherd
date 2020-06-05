@@ -17,11 +17,12 @@ pull:
 	docker pull bearstech/golang-dev
 
 docker-build:
-	mkdir -p .cache
+	mkdir -p .cache/go-pkg
 	docker run -ti --rm \
 		-v `pwd`:/src \
 		-w /src \
 		-v `pwd`/.cache:/.cache \
+		-v `pwd`/.cache/go-pkg:/go/pkg \
 		-u `id -u` \
 		bearstech/golang-dev \
 		make build
