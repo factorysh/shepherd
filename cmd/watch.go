@@ -6,18 +6,21 @@ import (
 	"github.com/docker/docker/client"
 	"github.com/factorysh/docker-visitor/visitor"
 	"github.com/factorysh/shepherd/config"
+	"github.com/factorysh/shepherd/metrics"
 	"github.com/factorysh/shepherd/shepherd"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
 var (
-	cfgFile string
+	cfgFile     string
+	listenAdmin string
 )
 
 func init() {
 	rootCmd.AddCommand(watchCmd)
 	watchCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "config file")
+	watchCmd.PersistentFlags().StringVarP(&listenAdmin, "admin", "a", "localhost:4012", "Listen admin http address")
 }
 
 var watchCmd = &cobra.Command{
@@ -46,6 +49,8 @@ var watchCmd = &cobra.Command{
 			cfg = config.New()
 		}
 
+		go metrics.ListenAndServe(listenAdmin)
+		log.Infof("Listening http admin : http://%s/metrics", listenAdmin)
 		// shepherd
 		l := shepherd.NewLater(cfg.Ttl)
 		j := shepherd.New(l, c)

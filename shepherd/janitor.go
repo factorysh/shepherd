@@ -9,6 +9,7 @@ import (
 	"github.com/davecgh/go-spew/spew"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
+	"github.com/factorysh/shepherd/metrics"
 	"github.com/factorysh/shepherd/todo"
 	log "github.com/sirupsen/logrus"
 )
@@ -58,6 +59,7 @@ func (j *shepherd) Event(action string, container *types.ContainerJSON) {
 		j.lock.Lock()
 		j.undead[container.ID] = new(interface{})
 		j.lock.Unlock()
+		metrics.ContainerDead.Inc()
 		d, err := j.GetTTL(GetName(container))
 		// Don't bother with errors, just use default duration
 		if err != nil {
@@ -75,6 +77,7 @@ func (j *shepherd) Event(action string, container *types.ContainerJSON) {
 	case "destroy":
 		j.lock.Lock()
 		defer j.lock.Unlock()
+		metrics.ContainerDestroyed.Inc()
 		_, ok := j.undead[container.ID]
 		if ok {
 			delete(j.undead, container.ID)
