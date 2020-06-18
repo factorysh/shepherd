@@ -49,7 +49,12 @@ var watchCmd = &cobra.Command{
 			cfg = config.New()
 		}
 
-		go metrics.ListenAndServe(listenAdmin)
+		go func() {
+			err := metrics.ListenAndServe(listenAdmin)
+			if err != nil {
+				log.WithError(err).Error()
+			}
+		}()
 		log.Infof("Listening http admin : http://%s/metrics", listenAdmin)
 		// shepherd
 		l := shepherd.NewLater(cfg.Ttl)

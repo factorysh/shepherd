@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Testshepherd(t *testing.T) {
+func TestShepherd(t *testing.T) {
 	j := NewLater(map[string]time.Duration{
 		"*":   500 * time.Millisecond,
 		"a/*": 100 * time.Millisecond,

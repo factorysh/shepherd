@@ -40,6 +40,7 @@ func (t *Todo) loop() {
 				delete(t.actions, id)
 				log.Debug("Done")
 			} else {
+				log.WithField("Id", id).Info("is a ghost")
 				// it's a ghost
 			}
 			t.lock.RUnlock()
