@@ -6,6 +6,7 @@ import (
 	"github.com/docker/docker/client"
 	"github.com/factorysh/docker-visitor/visitor"
 	"github.com/factorysh/shepherd/config"
+	"github.com/factorysh/shepherd/crash"
 	"github.com/factorysh/shepherd/metrics"
 	"github.com/factorysh/shepherd/shepherd"
 	log "github.com/sirupsen/logrus"
@@ -62,6 +63,15 @@ var watchCmd = &cobra.Command{
 		w := visitor.New(c)
 		w.VisitCurrentCointainer(j.Visit)
 		w.WatchFor(j.Event)
+
+		// crash
+		cr, err := crash.New(c)
+		if err != nil {
+			return err
+		}
+		w.WatchFor(cr.Event)
+
+		// Watch events
 		ctx := context.Background()
 		ctx, cancel := context.WithCancel(ctx)
 		err = w.Start(ctx)
@@ -69,6 +79,7 @@ var watchCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
+
 		return nil
 	},
 }

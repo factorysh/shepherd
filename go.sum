@@ -53,8 +53,8 @@ github.com/docker/go-units v0.4.0/go.mod h1:fgPhTUdO+D/Jk86RDLlptpiXQzgHJF7gydDD
 github.com/dustin/go-humanize v1.0.0/go.mod h1:HtrtbFcZ19U5GC7JDqmcUSB87Iq5E25KnS6fMYU6eOk=
 github.com/eknkc/amber v0.0.0-20171010120322-cdade1c07385/go.mod h1:0vRUJqYpeSZifjYj7uP3BG/gKcuzL9xWVV/Y+cK33KM=
 github.com/etcd-io/bbolt v1.3.3/go.mod h1:ZF2nL25h33cCyBtcyWeZ2/I3HQOfTP+0PIEvHjkjCrw=
-github.com/factorysh/docker-visitor v0.1.5 h1:WBvQNUZHjXi/lOjesli9QbJS75n7G1RFq002r4wuVqU=
-github.com/factorysh/docker-visitor v0.1.5/go.mod h1:t6js4SaD/QIxTSfJM6rwrfZRMtUjuE6heuQashTI1Ok=
+github.com/factorysh/docker-visitor v0.1.6 h1:VsHoKndGFywWfy2baUqCysMQAAGCXoPFLZlv1PlAwAw=
+github.com/factorysh/docker-visitor v0.1.6/go.mod h1:t6js4SaD/QIxTSfJM6rwrfZRMtUjuE6heuQashTI1Ok=
 github.com/fasthttp-contrib/websocket v0.0.0-20160511215533-1f3b11f56072/go.mod h1:duJ4Jxv5lDcvg4QuQr0oowTf7dz4/CR8NtyCooz9HL8=
 github.com/fatih/structs v1.1.0/go.mod h1:9NiDSp5zOcgEDl+j00MP/WkGVPOlPRLejGD8Ga6PJ7M=
 github.com/flosch/pongo2 v0.0.0-20190707114632-bbf5a6c351f4/go.mod h1:T9YF2M40nIgbVgp3rreNmTged+9HrbNTIQf1PsaIiTA=
