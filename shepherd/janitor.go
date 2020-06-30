@@ -6,7 +6,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
 	"github.com/factorysh/shepherd/metrics"
@@ -52,7 +51,7 @@ func (j *shepherd) GetTTL(name string) (time.Duration, error) {
 // Event handle an event, from docker-visitor
 func (j *shepherd) Event(action string, container *types.ContainerJSON) {
 	fmt.Println("🐳 ", action, container.Name)
-	spew.Dump(container.State)
+	//spew.Dump(container.State)
 	l := log.WithField("id", container.ID)
 	switch action {
 	case "die":
