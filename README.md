@@ -3,6 +3,8 @@ Shepherd
 
 Shepherd removes exited containers, with a grace time.
 
+Shepherd talks to Sentry when a container is closed with an exit code =! 0.
+
 Help
 ----
 
