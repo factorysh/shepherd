@@ -65,7 +65,10 @@ var watchCmd = &cobra.Command{
 		w.WatchFor(j.Event)
 
 		// crash
-		cr := crash.New(c)
+		cr, err := crash.New(c)
+		if err != nil {
+			return err
+		}
 		w.WatchFor(cr.Event)
 
 		// Watch events
