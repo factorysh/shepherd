@@ -3,6 +3,7 @@ package crash
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
 	"os"
 
 	"github.com/davecgh/go-spew/spew"
@@ -16,12 +17,18 @@ type Crash struct {
 	client   *client.Client
 	sentry   *sentry.Client
 	modifier *eventModifier
+	version  types.Version
 }
 
 func New(client *client.Client) (*Crash, error) {
+	v, err := client.ServerVersion(context.TODO())
+	if err != nil {
+		return nil, err
+	}
 	c := &Crash{
 		client:   client,
 		modifier: &eventModifier{},
+		version:  v,
 	}
 	// TODO, route by project and one DSN per project or group
 	dsn := os.Getenv("SENTRY_DSN")
@@ -63,12 +70,51 @@ func (c *Crash) Event(action string, container *types.ContainerJSON) {
 		l.WithField("exitCode", i.State.ExitCode).Info()
 		if c.sentry != nil {
 			if i.State.ExitCode != 0 || i.State.OOMKilled {
+				ctx = context.TODO()
+				r, err := c.client.ContainerLogs(ctx, container.ID, types.ContainerLogsOptions{
+					ShowStderr: true,
+					ShowStdout: true,
+					Tail:       "250",
+					Follow:     false,
+				})
+				var logs []byte
+				if err != nil {
+					l.WithError(err).Error()
+				} else {
+					logs, err = ioutil.ReadAll(r)
+					if err != nil {
+						l.WithError(err).Error()
+					}
+					r.Close()
+				}
+				t := map[string]string{
+					"runtime.name":    "docker",
+					"runtime":         fmt.Sprintf("docker %s", c.version.Version),
+					"container.name":  i.Name,
+					"container.image": i.Config.Image,
+				}
+				v, ok := i.Config.Labels["com.docker.compose.project"]
+				if ok {
+					t["compose.project"] = v
+				}
+				v, ok = i.Config.Labels["com.docker.compose.service"]
+				if ok {
+					t["compose.service"] = v
+				}
+
 				id := c.sentry.CaptureEvent(&sentry.Event{
-					Message: fmt.Sprintf("Container crash %s", i.Config.Hostname),
+					Message: fmt.Sprintf("Container crash %s", i.Name),
 					Extra: map[string]interface{}{
-						"Config": i.Config,
-						"State":  i.State,
+						"Id":              i.ID,
+						"Config":          i.Config,
+						"State":           i.State,
+						"GraphDriver":     i.GraphDriver,
+						"Image":           i.Image,
+						"Logs":            string(logs),
+						"Mounts":          i.Mounts,
+						"NetworkSettings": i.NetworkSettings,
 					},
+					Tags:  t,
 					Level: sentry.LevelError,
 				}, nil, c.modifier)
 				l.WithField("sentry", id).Info("Send to sentry")
