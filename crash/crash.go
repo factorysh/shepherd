@@ -113,6 +113,7 @@ func (c *Crash) Event(action string, container *types.ContainerJSON) {
 						"Logs":            string(logs),
 						"Mounts":          i.Mounts,
 						"NetworkSettings": i.NetworkSettings,
+						"Cgroup":          NewCgroup().fetchCgroupStates(container),
 					},
 					Tags:  t,
 					Level: sentry.LevelError,
