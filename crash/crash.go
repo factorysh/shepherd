@@ -55,7 +55,62 @@ func (e *eventModifier) ApplyToEvent(event *sentry.Event, hint *sentry.EventHint
 	return event
 }
 
-func (c *Crash) Event(action string, container *types.ContainerJSON) {
+func (c *Crash) BuildEvent(container *types.ContainerJSON) (*sentry.Event, error) {
+	ctx := context.TODO()
+	i, err := c.client.ContainerInspect(ctx, container.ID)
+	if err != nil {
+		return nil, err
+	}
+	ctx = context.TODO()
+	r, err := c.client.ContainerLogs(ctx, container.ID, types.ContainerLogsOptions{
+		ShowStderr: true,
+		ShowStdout: true,
+		Tail:       "250",
+		Follow:     false,
+	})
+	defer r.Close()
+	var logs []byte
+	if err != nil {
+		return nil, err
+	}
+	logs, err = ioutil.ReadAll(r)
+	if err != nil {
+		return nil, err
+	}
+	t := map[string]string{
+		"runtime.name":    "docker",
+		"runtime":         fmt.Sprintf("docker %s", c.version.Version),
+		"container.name":  i.Name,
+		"container.image": i.Config.Image,
+	}
+	v, ok := i.Config.Labels["com.docker.compose.project"]
+	if ok {
+		t["compose.project"] = v
+	}
+	v, ok = i.Config.Labels["com.docker.compose.service"]
+	if ok {
+		t["compose.service"] = v
+	}
+	return &sentry.Event{
+		Message: fmt.Sprintf("Container crash %s", i.Name),
+		Extra: map[string]interface{}{
+			"Id":              i.ID,
+			"Config":          i.Config,
+			"State":           i.State,
+			"GraphDriver":     i.GraphDriver,
+			"Image":           i.Image,
+			"Logs":            string(logs),
+			"Mounts":          i.Mounts,
+			"NetworkSettings": i.NetworkSettings,
+			"Cgroup":          NewCgroup().fetchCgroupStates(container),
+		},
+		Tags:  t,
+		Level: sentry.LevelError,
+	}, nil
+}
+
+// SendEvent sends event to Sentry
+func (c *Crash) SendEvent(action string, container *types.ContainerJSON) {
 	fmt.Println("🦆 ", action, container.Name)
 	l := log.WithField("id", container.Name)
 	l.WithField("action", action).Info("crash")
@@ -70,54 +125,12 @@ func (c *Crash) Event(action string, container *types.ContainerJSON) {
 		l.WithField("exitCode", i.State.ExitCode).Info()
 		if c.sentry != nil {
 			if i.State.ExitCode != 0 || i.State.OOMKilled {
-				ctx = context.TODO()
-				r, err := c.client.ContainerLogs(ctx, container.ID, types.ContainerLogsOptions{
-					ShowStderr: true,
-					ShowStdout: true,
-					Tail:       "250",
-					Follow:     false,
-				})
-				var logs []byte
+				evt, err := c.BuildEvent(container)
 				if err != nil {
 					l.WithError(err).Error()
-				} else {
-					logs, err = ioutil.ReadAll(r)
-					if err != nil {
-						l.WithError(err).Error()
-					}
-					r.Close()
+					return
 				}
-				t := map[string]string{
-					"runtime.name":    "docker",
-					"runtime":         fmt.Sprintf("docker %s", c.version.Version),
-					"container.name":  i.Name,
-					"container.image": i.Config.Image,
-				}
-				v, ok := i.Config.Labels["com.docker.compose.project"]
-				if ok {
-					t["compose.project"] = v
-				}
-				v, ok = i.Config.Labels["com.docker.compose.service"]
-				if ok {
-					t["compose.service"] = v
-				}
-
-				id := c.sentry.CaptureEvent(&sentry.Event{
-					Message: fmt.Sprintf("Container crash %s", i.Name),
-					Extra: map[string]interface{}{
-						"Id":              i.ID,
-						"Config":          i.Config,
-						"State":           i.State,
-						"GraphDriver":     i.GraphDriver,
-						"Image":           i.Image,
-						"Logs":            string(logs),
-						"Mounts":          i.Mounts,
-						"NetworkSettings": i.NetworkSettings,
-						"Cgroup":          NewCgroup().fetchCgroupStates(container),
-					},
-					Tags:  t,
-					Level: sentry.LevelError,
-				}, nil, c.modifier)
+				id := c.sentry.CaptureEvent(evt, nil, c.modifier)
 				l.WithField("sentry", id).Info("Send to sentry")
 			}
 		}
