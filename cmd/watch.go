@@ -69,7 +69,7 @@ var watchCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		w.WatchFor(cr.Event)
+		w.WatchFor(cr.SendEvent)
 
 		// Watch events
 		ctx := context.Background()
