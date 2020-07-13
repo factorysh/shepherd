@@ -2,6 +2,7 @@ package crash
 
 import (
 	"path"
+	"strings"
 
 	"io/ioutil"
 	"runtime"
@@ -45,7 +46,7 @@ func (c *Cgroup) readPath(group, key string, container *types.ContainerJSON) str
 		}).WithError(err).Error("Reading cgroup")
 		return ""
 	}
-	return string(v)
+	return strings.TrimSpace(string(v))
 }
 
 func (c *Cgroup) fetchCgroupStates(container *types.ContainerJSON) map[string]string {
