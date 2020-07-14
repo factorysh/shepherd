@@ -17,7 +17,7 @@ func init() {
 
 var eventCmd = &cobra.Command{
 	Use:   "event CONTAINER",
-	Short: "Displays container report, as it should be sent to Sentry",
+	Short: "Displays the report for a container, as it should be sent to Sentry",
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) < 1 {
 			return errors.New("requires a container id")

@@ -16,6 +16,7 @@ Usage:
   shepherd [command]
 
 Available Commands:
+  event       Displays the report for a container, as it should be sent to Sentry
   help        Help about any command
   version     Version of shepherd
   watch       Watch docker and clean its mess
