@@ -1,9 +1,9 @@
-Shepherd
-=======
+ShepherD
+========
 
-Shepherd removes exited containers, with a grace time.
+ShepherD removes exited containers, with a grace time.
 
-Shepherd talks to Sentry when a container is closed with an exit code =! 0.
+ShepherD talks to Sentry when a container is closed with an exit code =! 0.
 
 Help
 ----
