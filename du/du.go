@@ -5,33 +5,37 @@ import (
 	_path "path"
 )
 
-func Size(path string) (int64, error) {
+// Size returns size and inode
+func Size(path string) (int64, int64, error) {
 	return du(path)
 }
 
-func du(path string) (int64, error) {
-	var size int64
+func du(path string) (int64, int64, error) {
+	var size, inodes int64
+
 	f, err := os.Open(path)
 	if err != nil {
-		return 0, err
+		return 0, 0, err
 	}
 	defer f.Close()
 	fstat, err := f.Stat()
 	if err != nil {
-		return 0, err
+		return 0, 0, err
 	}
 	if fstat.IsDir() {
 		files, err := f.Readdir(-1)
 		if err != nil {
-			return 0, err
+			return 0, 0, err
 		}
 		for _, file := range files {
+			inodes++
 			if file.IsDir() {
-				s, err := du(_path.Join(path, file.Name()))
+				s, i, err := du(_path.Join(path, file.Name()))
 				if err != nil {
-					return 0, err
+					return 0, 0, err
 				}
 				size += s
+				inodes += i
 			} else {
 				size += file.Size()
 			}
@@ -39,5 +43,5 @@ func du(path string) (int64, error) {
 	} else {
 		size += fstat.Size()
 	}
-	return size, nil
+	return size, inodes, nil
 }

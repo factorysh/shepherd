@@ -19,7 +19,8 @@ func TestDu(t *testing.T) {
 		err = ioutil.WriteFile(path.Join(tempDir, "folder", fmt.Sprintf("file_%d", i)), []byte("popo"), 0600)
 		assert.NoError(t, err)
 	}
-	s, err := Size(tempDir)
+	s, i, err := Size(tempDir)
 	assert.NoError(t, err)
 	assert.Equal(t, int64(40), s)
+	assert.Equal(t, int64(11), i)
 }

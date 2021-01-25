@@ -48,12 +48,12 @@ var upperdirCmd = &cobra.Command{
 			u, ok := json.GraphDriver.Data["UpperDir"]
 			if ok {
 				if dujson {
-					s, err := du.Size(u)
+					s, j, err := du.Size(u)
 					if err != nil {
 						fmt.Fprintln(os.Stderr, err.Error())
 						os.Exit(1)
 					}
-					fmt.Printf(`{"container":"%s", "upper_dir":"%s", "size":%d}`, container.Names[0], u, s)
+					fmt.Printf(`{"container":"%s", "upper_dir":"%s", "size":%d, "inodes":%d}`, container.Names[0], u, s, j)
 					if i < len(containers)-1 {
 						fmt.Println(",")
 					}
