@@ -10,8 +10,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var (
+	all bool
+)
+
 func init() {
 	rootCmd.AddCommand(upperdirCmd)
+	upperdirCmd.PersistentFlags().BoolVarP(&all, "all", "a", false, "all containers")
 }
 
 var upperdirCmd = &cobra.Command{
@@ -23,7 +28,9 @@ var upperdirCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		containers, err := c.ContainerList(context.TODO(), types.ContainerListOptions{})
+		containers, err := c.ContainerList(context.TODO(), types.ContainerListOptions{
+			All: all,
+		})
 		if err != nil {
 			return err
 		}
