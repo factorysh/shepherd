@@ -2,8 +2,11 @@ package cmd
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"os"
+	"sort"
+	"strings"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
@@ -22,6 +25,30 @@ func init() {
 	upperdirCmd.PersistentFlags().BoolVarP(&dujson, "json", "j", false, "json output")
 }
 
+type ContainerUpperdir struct {
+	Size      int64  `json:"size"`
+	Nodes     int64  `json:"nodes"`
+	Container string `json:"container"`
+	UpperDir  string `json:"upper_dir"`
+}
+
+type ContainerUpperdirs []ContainerUpperdir
+
+func (c ContainerUpperdirs) Len() int {
+	return len(c)
+}
+
+func (c ContainerUpperdirs) Less(i, j int) bool {
+	if c[i].Size != c[j].Size {
+		return c[i].Size < c[j].Size
+	}
+	return strings.Compare(c[i].Container, c[j].Container) == -1
+}
+
+func (c ContainerUpperdirs) Swap(i, j int) {
+	c[i], c[j] = c[j], c[i]
+}
+
 var upperdirCmd = &cobra.Command{
 	Use:   "upperdir",
 	Short: "Upperdir",
@@ -37,10 +64,8 @@ var upperdirCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		if dujson {
-			fmt.Println("[")
-		}
-		for i, container := range containers {
+		cs := make(ContainerUpperdirs, 0)
+		for _, container := range containers {
 			json, err := c.ContainerInspect(context.TODO(), container.ID)
 			if err != nil {
 				return err
@@ -48,15 +73,17 @@ var upperdirCmd = &cobra.Command{
 			u, ok := json.GraphDriver.Data["UpperDir"]
 			if ok {
 				if dujson {
-					s, j, err := du.Size(u)
+					s, i, err := du.Size(u)
 					if err != nil {
 						fmt.Fprintln(os.Stderr, err.Error())
 						os.Exit(1)
 					}
-					fmt.Printf(`{"container":"%s", "upper_dir":"%s", "size":%d, "inodes":%d}`, container.Names[0], u, s, j)
-					if i < len(containers)-1 {
-						fmt.Println(",")
-					}
+					cs = append(cs, ContainerUpperdir{
+						Container: container.Names[0],
+						UpperDir:  u,
+						Size:      s,
+						Nodes:     i,
+					})
 				} else {
 					fmt.Fprintln(os.Stderr, container.Names[0])
 					fmt.Println(u)
@@ -64,9 +91,9 @@ var upperdirCmd = &cobra.Command{
 			}
 		}
 		if dujson {
-			fmt.Println("]")
+			sort.Sort(cs)
+			json.NewEncoder(os.Stdout).Encode(cs)
 		}
-
 		return nil
 	},
 }
