@@ -10,8 +10,10 @@ bin:
 	mkdir -p bin
 
 test:
-	go test -v -cover github.com/factorysh/shepherd/todo
-	go test -v -cover github.com/factorysh/shepherd/shepherd
+	go test -cover \
+		github.com/factorysh/shepherd/du \
+		github.com/factorysh/shepherd/todo \
+		github.com/factorysh/shepherd/shepherd
 
 pull:
 	docker pull bearstech/golang-dev
