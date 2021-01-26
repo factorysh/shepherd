@@ -41,6 +41,26 @@ Flags:
   -h, --help            help for watch
 ```
 
+```
+$ ./bin/shepherd upperdir --help
+
+Explore content of upperdir layer of your containers.
+
+You can pipe result : ./bin/shepherd upperdir| xargs tree -s
+Or using JSON output: ./bin/shepherd upperdir -j | jq .
+
+Usage:
+  shepherd upperdir [flags]
+
+Aliases:
+  upperdir, upper
+
+Flags:
+  -a, --all    all containers
+  -h, --help   help for upperdir
+  -j, --json   json output
+```
+
 Build it
 --------
 
