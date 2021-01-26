@@ -7,10 +7,6 @@ import (
 
 // Size returns size and inode
 func Size(path string) (int64, int64, error) {
-	return du(path)
-}
-
-func du(path string) (int64, int64, error) {
 	var size, inodes int64
 
 	f, err := os.Open(path)
@@ -30,7 +26,7 @@ func du(path string) (int64, int64, error) {
 		for _, file := range files {
 			inodes++
 			if file.IsDir() {
-				s, i, err := du(_path.Join(path, file.Name()))
+				s, i, err := Size(_path.Join(path, file.Name()))
 				if err != nil {
 					return 0, 0, err
 				}
