@@ -50,8 +50,14 @@ func (c ContainerUpperdirs) Swap(i, j int) {
 }
 
 var upperdirCmd = &cobra.Command{
-	Use:   "upperdir",
-	Short: "Upperdir",
+	Use:     "upperdir",
+	Aliases: []string{"upper"},
+	Short:   "List containers upperdir",
+	Long: fmt.Sprintf(`
+Explore content of upperdir layer of your containers.
+
+You can pipe result : %s %s | xargs tree -s
+Or using JSON output: %s %s -j | jq .`, os.Args[0], os.Args[1], os.Args[0], os.Args[1]),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// docker
 		c, err := client.NewEnvClient()
