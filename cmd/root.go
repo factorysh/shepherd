@@ -14,8 +14,13 @@ import (
 var (
 	rootCmd = &cobra.Command{
 		Use:   "shepherd",
-		Short: "shepherd cleans the mess",
-		Long:  ``,
+		Short: "Shepherd cleans the mess",
+		Long: fmt.Sprintf(`Shepherd watch for docker mess.
+		
+		version %s`, version.Version()),
+		Run: func(cmd *cobra.Command, args []string) {
+			cmd.Help()
+		},
 	}
 )
 
