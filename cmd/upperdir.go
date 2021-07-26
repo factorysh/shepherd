@@ -21,7 +21,7 @@ var (
 
 func init() {
 	rootCmd.AddCommand(upperdirCmd)
-	upperdirCmd.PersistentFlags().BoolVarP(&all, "all", "a", false, "all containers")
+	upperdirCmd.PersistentFlags().BoolVarP(&all, "all", "a", false, "all containers (hidden ones too)")
 	upperdirCmd.PersistentFlags().BoolVarP(&dujson, "json", "j", false, "json output")
 }
 
