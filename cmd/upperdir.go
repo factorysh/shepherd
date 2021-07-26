@@ -49,6 +49,13 @@ func (c ContainerUpperdirs) Swap(i, j int) {
 	c[i], c[j] = c[j], c[i]
 }
 
+func containerNameOrDummy() string {
+	if len(os.Args) > 1 {
+		return os.Args[1]
+	}
+	return "my_container"
+}
+
 var upperdirCmd = &cobra.Command{
 	Use:     "upperdir",
 	Aliases: []string{"upper"},
@@ -57,7 +64,8 @@ var upperdirCmd = &cobra.Command{
 Explore content of upperdir layer of your containers.
 
 You can pipe result : %s %s | xargs tree -s
-Or using JSON output: %s %s -j | jq .`, os.Args[0], os.Args[1], os.Args[0], os.Args[1]),
+Or using JSON output: %s %s -j | jq .`, os.Args[0], containerNameOrDummy(),
+		os.Args[0], containerNameOrDummy()),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// docker
 		c, err := client.NewEnvClient()
