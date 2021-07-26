@@ -53,7 +53,7 @@ func containerNameOrDummy() string {
 	if len(os.Args) > 1 {
 		return os.Args[1]
 	}
-	return "my_container"
+	return ""
 }
 
 var upperdirCmd = &cobra.Command{
@@ -63,8 +63,16 @@ var upperdirCmd = &cobra.Command{
 	Long: fmt.Sprintf(`
 Explore content of upperdir layer of your containers.
 
-You can pipe result : %s %s | xargs tree -s
-Or using JSON output: %s %s -j | jq .`, os.Args[0], containerNameOrDummy(),
+You can pipe result :
+
+    %s %s | xargs tree -s
+    %s %s | xargs du -hs
+
+Or using JSON output:
+
+    %s %s -j | jq .`,
+		os.Args[0], containerNameOrDummy(),
+		os.Args[0], containerNameOrDummy(),
 		os.Args[0], containerNameOrDummy()),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// docker
