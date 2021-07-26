@@ -26,7 +26,13 @@ func init() {
 
 var watchCmd = &cobra.Command{
 	Use:   "watch",
-	Short: "Watch docker and clean its mess",
+	Short: "Watch docker runs, send Sentry reports, remove old stopped containers.",
+	Long: `Watch container runs.
+
+ * Send a sentry report when a container stop without an exit code != 0.
+ * Remove stopped containers after a grace period.
+ * Can exposes som Prometheus metrics.
+ `,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// lorgus, sentry
 		initLog()
@@ -64,7 +70,7 @@ var watchCmd = &cobra.Command{
 		w.VisitCurrentCointainer(j.Visit)
 		w.WatchFor(j.Event)
 
-		// crash
+		// watch for container crash
 		cr, err := crash.New(c)
 		if err != nil {
 			return err
