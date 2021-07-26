@@ -18,6 +18,10 @@ test:
 pull:
 	docker pull bearstech/golang-dev
 
+linux:
+	GOOS=linux make build
+	upx bin/shepherd
+
 docker-build:
 	mkdir -p .cache/go-pkg
 	docker run -ti --rm \
