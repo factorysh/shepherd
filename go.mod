@@ -5,7 +5,7 @@ go 1.14
 require (
 	github.com/davecgh/go-spew v1.1.1
 	github.com/docker/docker v1.13.1
-	github.com/factorysh/docker-visitor v1.7.2
+	github.com/factorysh/docker-visitor v1.7.3
 	github.com/getsentry/sentry-go v0.11.0
 	github.com/onrik/logrus v0.9.0
 	github.com/prometheus/client_golang v1.11.0
