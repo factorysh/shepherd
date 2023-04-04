@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/davecgh/go-spew v1.1.1
-	github.com/docker/docker v20.10.12+incompatible
+	github.com/docker/docker v20.10.24+incompatible
 	github.com/factorysh/docker-visitor v1.7.5
 	github.com/getsentry/sentry-go v0.12.0
 	github.com/onrik/logrus v0.9.0
